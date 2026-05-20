@@ -1,6 +1,6 @@
 /**
  * ╔══════════════════════════════════════════════════════════════════╗
- * ║         CyberAgent v25.0 — Unified Cyber Defense System         ║
+ * ║        CyberAgent v25.1 — Unified Cyber Defense System          ║
  * ║                                                                  ║
  * ║  Combines: Smart Phishing Reporter + Threat Intelligence Engine  ║
  * ║                                                                  ║
@@ -25,6 +25,11 @@
  * ║         VT_KEY    = your VirusTotal API key                     ║
  * ║         ABUSE_KEY = your AbuseIPDB API key                      ║
  * ║    3. Set your LOG_SHEET_ID below                               ║
+ * ║                                                                  ║
+ * ║  Fixed in v25.1:                                                 ║
+ * ║    • Added abuseipdb.com to trusted sender + URL domains         ║
+ * ║    • extractUrls() now filters w3.org HTML namespace URLs        ║
+ * ║    • Added mailgun.org / mailgun.net as trusted mail platforms   ║
  * ╚══════════════════════════════════════════════════════════════════╝
  */
 
@@ -95,7 +100,14 @@ const TRUSTED_SENDER_DOMAINS = [
   // UK Government
   "gov.uk", "hmrc.gov.uk",
   // Banks
-  "barclays.co.uk", "hsbc.co.uk", "lloyds.com", "natwest.com"
+  "barclays.co.uk", "hsbc.co.uk", "lloyds.com", "natwest.com",
+
+  // Security tools you use — prevent false positives on their own emails
+  "abuseipdb.com",        // AbuseIPDB confirmation / notification emails
+  "mg.abuseipdb.com",     // AbuseIPDB via Mailgun sending domain
+  "virustotal.com",       // VirusTotal notification emails
+  "mailgun.org",          // Mailgun transactional email platform
+  "mailgun.net"           // Mailgun transactional email platform
 ];
 
 // ── TRUSTED URL DOMAINS ───────────────────────────────────────────
@@ -113,7 +125,12 @@ const TRUSTED_URL_DOMAINS = [
   // CDN / Infrastructure
   "cloudfront.net", "w3.org", "googleapis.com",
   "gstatic.com", "licdn.com", "yelpcdn.com",
-  "klaviyo-cdn.com", "static-forms.klaviyo.com"
+  "klaviyo-cdn.com", "static-forms.klaviyo.com",
+
+  // Security tools — links inside their emails are safe
+  "abuseipdb.com", "mg.abuseipdb.com",
+  "virustotal.com",
+  "mailgun.org", "mailgun.net"
 ];
 
 // ── MARKETING PLATFORMS ───────────────────────────────────────────
@@ -742,7 +759,7 @@ credential harvesting, malicious links, or social engineering.
 Please review and investigate accordingly.
 
 Regards,
-CyberAgent v25.0 — Automated Cyber Defense System
+CyberAgent v25.1 — Automated Cyber Defense System
 `;
 
   GmailApp.createDraft(REPORT_TO, subject, body);
@@ -863,9 +880,23 @@ function extractUrls(text) {
   if (!text) return [];
   const matches = text.match(/https?:\/\/[^\s"'<>]+/gi);
   if (!matches) return [];
-  return uniqueArray(matches.map(u =>
-    u.replace(/&amp;/g, "&").replace(/[),.;"]+$/g, "").trim()
-  ));
+
+  // URLs that are HTML/XML namespace declarations — not real links
+  const htmlNamespacePatterns = [
+    "w3.org/1999/xhtml",
+    "w3.org/TR/xhtml",
+    "w3.org/2000/svg",
+    "w3.org/1999/02/22-rdf-syntax",
+    "w3.org/2001/XMLSchema",
+    "schemas.microsoft.com",
+    "schemas.openxmlformats.org"
+  ];
+
+  return uniqueArray(
+    matches
+      .map(u => u.replace(/&amp;/g, "&").replace(/[),.;"]+$/g, "").trim())
+      .filter(u => !htmlNamespacePatterns.some(p => u.includes(p)))
+  );
 }
 
 function extractDomainFromSender(sender) {
