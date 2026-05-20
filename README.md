@@ -1,86 +1,88 @@
-# Gmail-Threat-Intel-CyberAgent 🛡️✈️
+# CyberAgent v25.0 — Unified Cyber Defense System 🛡️✈️
 
-An enterprise-grade, automated **Threat Intelligence & Incident Response System** designed for Gmail using **Google Apps Script**. This cloud-native system runs on time-based triggers to parse incoming emails, conduct deep digital forensics, cross-reference global threat feeds, and automatically stage comprehensive incident reports—all without exposing sensitive API credentials.
+An enterprise-grade, cloud-native **Email Forensics, Threat Intelligence, and Automated Incident Response System** built for Gmail using Google Apps Script. CyberAgent v25.0 acts as an automated **SOAR** (Security Orchestration, Automation, and Response) platform—scanning incoming traffic, analyzing risk telemetry, extracting true infrastructure origins, and preparing compliance-ready incident response drafts.
 
 ---
 
 ## 📊 1. كيف يعمل النظام؟ | How the System Works?
 
 ### باللغة العربية:
-النظام عبارة عن بيئة دفاعية مؤتمتة تعمل بالكامل في السحاب (Cloud-Native). يقوم السكربت المجدول بجمع البيانات وفحصها كالتالي:
-1. **المُحفّز المجدول (Cron Trigger):** يشتغل السكربت مرتين يومياً تلقائياً دون أي تدخل بشري.
-2. **تغذية التهديدات (Threat Feed):** يسحب أحدث مؤشرات الاختراق (IoCs) النشطة عالمياً من منصة URLhaus.
-3. **الفحص المزدوج (Dual Scanning):** يرسل المؤشرات بشكل آمن إلى VirusTotal و AbuseIPDB عبر الـ API للتأكد من سمعتها وخطورتها.
-4. **قاعدة البيانات (SIEM Sheet):** يتم تنظيف البيانات وتسجيلها فوراً في جدول Google Sheets المخصص لتصبح قاعدة بيانات حية ومحدثة للتهديدات.
+يعمل النظام كحارس أمني ذكي ومؤتمت بالكامل لحماية بريدك الإلكتروني خلال الـ 24 ساعة الماضية عبر 4 مراحل أساسية:
+1. **قراءة وتحليل الرسائل (Ingestion & Parsing):** يفحص صندوق الوارد ومجلد الرسائل غير المرغوب فيها (Spam)، ويستخرج الروابط، المرفقات، والنصوص.
+2. **محرك تقييم المخاطر (Advanced Risk Engine):** يحلل محتوى الرسالة برمجياً، ويكتشف انتحال العلامات التجارية (Brand Impersonation)، والكلمات العاجلة، مع استبعاد النشرات الإخبارية الموثوقة ذكياً لمنع التنبيهات الكاذبة.
+3. **التحليل الجنائي الرقمي (Threat Intelligence):** إذا كانت الرسالة مشبوهة (MEDIUM/HIGH)، يتم استخراج الـ IP الحقيقي للمرسل من الـ Headers وعزله عن خوادم جوجل، ثم فحصه عبر AbuseIPDB، وفحص الروابط عبر VirusTotal.
+4. **الاستجابة المؤتمتة (Automated Response):** يسجل التفاصيل في Google Sheet، ويقوم بإنشاء **مسودة تقرير أمني احترافي جاهز** في بريدك لإرساله فوراً للجهات الأمنية العالمية (مثل NCSC و APWG).
 
 ### In English:
-The system is a fully automated, cloud-native defense environment. The scheduled script orchestrates threat hunting as follows:
-1. **Cron Trigger:** The script executes automatically twice a day without human interaction.
-2. **Threat Feed Harvesting:** Fetches active indicators of compromise (IoCs) from the global URLhaus database.
-3. **Dual API Enrichment:** Queries VirusTotal and AbuseIPDB to assess maliciousness and confidence scores.
-4. **Decentralized SIEM Logging:** Automatically structures, sanitizes, and appends the intelligence telemetry into Google Sheets.
+CyberAgent v25.0 operates as an automated, non-destructive tactical gateway processing emails from the last 24 hours through a 4-stage pipeline:
+1. **Ingestion & Parsing:** Monitors both Inbox and Spam folders, extracting metadata, localized raw bodies, attachments, and URLs.
+2. **Heuristic Risk Engine:** Programmatically evaluates metrics such as urgent call-to-actions, credential harvesting patterns, and Brand Impersonation, while dynamically whitelisting trusted infrastructure and marketing platforms (Newsletters).
+3. **Forensic Threat Intelligence:** For non-LOW risk profiles, it extracts the true originating sender IP (bypassing Google's proxies), queries AbuseIPDB for multi-report historical confidence, and cross-references external links via VirusTotal.
+4. **Orchestrated Incident Response:** Appends full metrics to a secure decentralized SIEM Google Sheet and **automatically builds an actionable, rich cyber incident report draft** addressed to global authorities (NCSC, APWG).
+
+#### 🗺️ Unified Operational Pipeline / مخطط سير العمليات الموحد
+
 
 ---
 
 ## 🛠️ 2. إعداد البيئة الرقمية | Setting Up the Environment
 
 ### باللغة العربية:
-1. افتح حسابك الشخصي في جوجل، ثم انتقل إلى [Google Sheets](https://sheets.google.com).
-2. أنشئ جدولاً فارغاً جديداً، وقم بتغيير اسم الصفحة بالأسفل بدقة من `Sheet1` إلى: **`Threat_Intelligence_DB`**.
-3. من شريط الأدوات العلوي، اضغط على **Extensions** (الإضافات) ثم اختر **Apps Script**.
-4. امسح الكود الافتراضي، وضَع كود السكربت المطور الخاص بنا (`Code.gs`)، ثم اضغط على زر **💾 (الحفظ)** المتواجد بالشريط العلوي.
+1. انتقل إلى [Google Sheets](https://sheets.google.com) وأنشئ جدولاً جديداً.
+2. انسخ **رابط معرف الجدول (Spreadsheet ID)** من شريط العنوان (الرمز الطويل المتواجد بين `/d/` و `/edit`).
+3. من القائمة العلوية، اختر **Extensions** ثم **Apps Script**.
+4. استبدل الكود الافتراضي بكود **`Code.gs` (الإصدار v25.0)**.
+5. ابحث عن المتغير `LOG_SHEET_ID` في السطر 45 وضَع معرف الجدول الخاص بك مكانه. اضغط على زر **الحفظ (💾)**.
 
 ### In English:
-1. Log into your Google account and navigate to [Google Sheets](https://sheets.google.com).
-2. Create a new blank spreadsheet, and rename the active tab at the bottom from `Sheet1` to exactly: **`Threat_Intelligence_DB`**.
-3. From the top menu, click on **Extensions**, then select **Apps Script**.
-4. Delete any default placeholder code, paste the secure automation code (`Code.gs`) from this repository, and click the **💾 (Save)** icon.
+1. Navigate to [Google Sheets](https://sheets.google.com) and create a new blank spreadsheet.
+2. Copy the unique **Spreadsheet ID** from your browser's URL bar (the long alphanumeric string between `/d/` and `/edit`).
+3. From the top menu, click **Extensions** ➔ **Apps Script**.
+4. Delete all default placeholders and paste the **`Code.gs` (v25.0)** production code.
+5. Locate the `LOG_SHEET_ID` constant (Line 45) and paste your copied Spreadsheet ID inside the quotes. Click the **Save (💾)** icon.
 
 ---
 
-## 🔑 3. استخراج المفاتيح الأمنية | Extracting the Security API Keys
+## 🔑 3. تفعيل الخدمات والمفاتيح | Enabling Services & APIs
 
-### 📑 أ. منصة VirusTotal Platform
-* **العربية:** ادخل إلى `https://www.virustotal.com` وأنشئ حساباً مجانياً. فعّل الحساب من بريدك، ثم اضغط على **صورة ملفك الشخصي** في أعلى اليمين واختر **API key** وانسخ الرمز الطويل.
-* **English:** Go to `https://www.virustotal.com` and register a free account. Verify your email, click your **User Profile icon** in the top-right corner, select **API key**, and copy the active key string.
+### ⚙️ أ. تفعيل خدمة Gmail API (Advanced Service)
+* **العربية:** داخل واجهة Apps Script، انظر للقائمة الجانبية اليسرى، اضغط على زر **(+)** بجانب كلمة **Services**، اختر **Gmail API** واضغط **Add**. (هذا ضروري جداً لتمكين الفحص الجنائي للـ Headers).
+* **English:** Inside the Apps Script editor sidebar, click the **(+) icon next to Services**, select **Gmail API** from the list, and click **Add**. (Crucial for accessing Advanced Metadata and Header Forensic properties).
 
-### 📑 ب. منصة AbuseIPDB Platform
-* **العربية:** سجل في `https://www.abuseipdb.com/register` بحساب **Developer** مجاني. بعد التفعيل، ادخل للوحة التحكم، واضغط على تبويب **API**، ثم زر **Create Key** الأزرق وانسخ المفتاح.
-* **English:** Register at `https://www.abuseipdb.com/register` for a free **Developer** account. Once verified, go to the dashboard, click the **API** tab, hit the blue **Create Key** button, and copy your token.
-
-### 📑 ج. منصة Gemini API (Google AI Studio)
-* **العربية:** توجه إلى `https://aistudio.google.com/` واضغط على **Get API key** من القائمة الجانبية، ثم اختر **Create API key** وانسخ الرمز المتولد للتحليل الذكي الافتراضي للتهديدات.
-* **English:** Navigate to `https://aistudio.google.com/`, click **Get API key** from the sidebar menu, select **Create API key**, and copy the generated AI token.
+### 🔑 ب. ضبط مفاتيح الأسرار (Script Properties)
+* **العربية:** اذهب إلى إعدادات المشروع ⚙️ (أيقونة الترس الجانبية)، انزل لأسفل إلى **Script Properties**، وأضف المفاتيح التالية:
+  * `VT_KEY` ➔ (مفتاحك الخاص من VirusTotal)
+  * `ABUSE_KEY` ➔ (مفتاحك الخاص من AbuseIPDB)
+* **English:** Go to **Project Settings ⚙️** (the gear icon on the left), scroll down to **Script Properties**, click **Add script property**, and map your environment credentials:
+  * `VT_KEY` ➔ [Your VirusTotal API Token]
+  * `ABUSE_KEY` ➔ [Your AbuseIPDB API Token]
 
 ---
 
-## 🔒 4. إدارة الأسرار وإخفاء المفاتيح | Secrets Management
+## 🛡️ 4. وضع الأمان والمخرجات المتوقعة | Safe Mode & Triage Matrix
 
 ### باللغة العربية:
-لحماية المفاتيح من السرقة وعدم تركها مكشوفة في الكود (وهو معيار أمني عالمي لحماية البيانات الحساسة):
-1. داخل صفحة **Google Apps Script**، اضغط على أيقونة **الترس ⚙️ (Project Settings)** من القائمة الجانبية اليسرى.
-2. انزل لأسفل الصفحة حتى تصل إلى قسم **Script Properties**.
-3. اضغط على زر **Add script property** وأضف الرموز كالتالي:
-   * اسم الخاصية (Property): `VT_KEY` -> القيمة (Value): [ضع مفتاح VirusTotal هنا]
-   * اسم الخاصية (Property): `ABUSE_KEY` -> القيمة (Value): [ضع مفتاح AbuseIPDB هنا]
-   * اسم الخاصية (Property): `GEMINI_KEY` -> القيمة (Value): [ضع مفتاح Gemini هنا]
-4. اضغط على الزر الأزرق **Save script properties**.
+يتميز النظام بـ **وضع الأمان المطلق (Safe Mode)**: فهو لا يقوم بحذف أي رسائل، ولا يفتح الروابط برمجياً، ولا يرسل إيميلات تلقائية بدون إذنك. يقتصر عمله على فرز وتصنيف الرسائل كالتالي:
+
+| فئة المخاطر | الإجراء المتخذ برمجياً | الملصق المضاف (Label) |
+| :--- | :--- | :--- |
+| **مخاطر منخفضة / موثوق** | يتم تسجيل البيانات في الجدول فقط لتوثيقها بأمان. | `CyberAgent-Trusted-Logged` |
+| **مخاطر متوسطة / عالية** | فحص عميق عبر الـ APIs + إنشاء مسودة بلاغ أمني جاهزة للإرسال. | `CyberAgent-Review` |
 
 ### In English:
-To adhere to industrial frameworks and avoid hardcoding credentials inside open-source code:
-1. Within your **Google Apps Script** dashboard, click the **Gear Icon ⚙️ (Project Settings)** on the left sidebar.
-2. Scroll down to the **Script Properties** deployment window.
-3. Click **Add script property** and securely map the environment variables:
-   * Property: `VT_KEY` -> Value: [Your VirusTotal API Key]
-   * Property: `ABUSE_KEY` -> Value: [Your AbuseIPDB API Key]
-   * Property: `GEMINI_KEY` -> Value: [Your Gemini API Key]
-4. Click the blue **Save script properties** button to lock the secrets in the environment variable container.
+The system strictly enforces **Safe Mode execution guidelines**: it never automatically sends outbound mail, never deletes records, and never triggers embedded links. It gracefully sorts traffic based on the following automated telemetry:
 
-```javascript
-// Production-ready secure configuration mapping (Zero Hardcoded Credentials)
-const INTEL_CONFIG = {
-  VT_API_KEY     : PropertiesService.getScriptProperties().getProperty('VT_KEY'), 
-  ABUSE_API_KEY  : PropertiesService.getScriptProperties().getProperty('ABUSE_KEY'),
-  GEMINI_API_KEY : PropertiesService.getScriptProperties().getProperty('GEMINI_KEY'), 
-  SHEET_NAME     : "Threat_Intelligence_DB"
-};
+| Risk Profile | Automation Trigger | Applied Retention Label |
+| :--- | :--- | :--- |
+| **LOW / Trusted Platform** | Passive telemetry logging inside the spreadsheet for security auditing. | `CyberAgent-Trusted-Logged` |
+| **MEDIUM / HIGH Risk** | API lookup enrichment + **Generates a full-text threat report draft** in your mailbox. | `CyberAgent-Review` |
+
+```text
++-----------------------------------------------------------------------------------+
+|               [CyberAgent v25.0 Threat Intelligence Draft Report]                 |
+| To: report@phishing.gov.uk, reportphishing@apwg.org                              |
+| Subject: [CyberAgent v25] HIGH RISK — Urgent Action Required: Account Suspended   |
+| --------------------------------------------------------------------------------- |
+| Forensics: IP: 185.x.x.x | Abuse Score: 92% | Country: UA                          |
+| VirusTotal: 🔴 MALICIOUS | Google Storage Phishing Link Detected                  |
++-----------------------------------------------------------------------------------+
